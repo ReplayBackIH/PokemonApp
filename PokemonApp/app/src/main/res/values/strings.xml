@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">PokemonApp</string>
+    <string name="introduction_1">All pokemons</string>
+    <string name="introduction_2">in one place!</string>
+    <string name="check_out_btn">Check it out!</string>
+    <string name="dot">.</string>
+    <string name="go_back_button">Go back to list</string>
+    <string name="tv_type">Type</string>
+    <string name="tv_weight">Weight (kg)</string>
+    <string name="tv_height">Height (cm)</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
