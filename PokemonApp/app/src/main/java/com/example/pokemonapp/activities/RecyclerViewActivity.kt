@@ -2,12 +2,16 @@ package com.example.pokemonapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokemonapp.R
 import com.example.pokemonapp.databinding.ActivityRecyclerViewBinding
 import com.example.pokemonapp.fragments.DetailedPokemonFragment
 import com.example.pokemonapp.pokemonAdapter.RcVeiwAdapter
+import com.example.pokemonapp.retrofit.OnPokemonSelectedListener
 import com.example.pokemonapp.retrofit.PokemonApi
+import com.example.pokemonapp.retrofit.PokemonDetails
 import com.example.pokemonapp.retrofit.SinglePokemon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +19,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RecyclerViewActivity : AppCompatActivity(), RcVeiwAdapter.OnItemClickListener {
+class RecyclerViewActivity : AppCompatActivity(),OnPokemonSelectedListener {
 
     lateinit var binding: ActivityRecyclerViewBinding
     lateinit var adapter: RcVeiwAdapter
@@ -45,11 +49,14 @@ class RecyclerViewActivity : AppCompatActivity(), RcVeiwAdapter.OnItemClickListe
         }
     }
 
-    override fun onItemClick(pokemon: SinglePokemon) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        val detailedFragment = DetailedPokemonFragment()
-
-        fragmentTransaction.replace(R.id.containerForFragments,detailedFragment)
-        fragmentTransaction.commit()
+    override fun onPokemonSelected(pokemonId: Int) {
+        val detailedPokemonFragment = DetailedPokemonFragment().apply {
+            arguments = Bundle().apply {
+                putInt("pokemonId",pokemonId)
+            }
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.containerForFragments,detailedPokemonFragment)
+            .commit()
     }
 }
