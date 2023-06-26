@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.pokemonapp.R
 import com.example.pokemonapp.databinding.ActivityMainBinding
 import com.example.pokemonapp.databinding.RecyclerViewItemBinding
+import com.example.pokemonapp.retrofit.OnPokemonSelectedListener
 import com.example.pokemonapp.retrofit.Pokemons
 import com.example.pokemonapp.retrofit.SinglePokemon
 
-class RcVeiwAdapter(val listener: OnItemClickListener) :
+class RcVeiwAdapter(val listener: OnPokemonSelectedListener) :
     ListAdapter<SinglePokemon, RcVeiwAdapter.PokemonHolder>(ElementComparator()) {
 
 
@@ -28,7 +29,8 @@ class RcVeiwAdapter(val listener: OnItemClickListener) :
             itemView.setOnClickListener{
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION){
-                    listener.onItemClick(getItem(position))
+                   val pokemonId = position + 1
+                    listener.onPokemonSelected(pokemonId)
                 }
             }
         }
@@ -58,10 +60,5 @@ class RcVeiwAdapter(val listener: OnItemClickListener) :
             return oldItem == newItem
         }
     }
-
-    interface OnItemClickListener {
-        fun onItemClick(pokemon: SinglePokemon)
-    }
-
 }
 
