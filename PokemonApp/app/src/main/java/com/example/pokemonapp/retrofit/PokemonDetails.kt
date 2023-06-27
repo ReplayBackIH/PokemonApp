@@ -19,5 +19,4 @@ data class Type(
 
 data class TypeDetails(
     val name: String,
-    val url: String
 )

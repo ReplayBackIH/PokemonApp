@@ -57,6 +57,7 @@ class RecyclerViewActivity : AppCompatActivity(),OnPokemonSelectedListener {
         }
         supportFragmentManager.beginTransaction()
             .replace(R.id.containerForFragments,detailedPokemonFragment)
+            .addToBackStack(null)
             .commit()
     }
 }

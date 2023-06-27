@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import com.bumptech.glide.Glide
 import com.example.pokemonapp.R
 import com.example.pokemonapp.activities.RecyclerViewActivity
 import com.example.pokemonapp.databinding.FragmentDetailedPokemonBinding
@@ -52,10 +54,9 @@ class DetailedPokemonFragment : Fragment() {
             }
         }
 
-
         val buttonGoBack: Button = view.findViewById(R.id.btnGoBack)
         buttonGoBack.setOnClickListener {
-            FragmentManager.POP_BACK_STACK_INCLUSIVE
+            parentFragmentManager.popBackStack()
         }
     }
 
@@ -64,20 +65,31 @@ class DetailedPokemonFragment : Fragment() {
         val weightOfPokemon : TextView = view.findViewById(R.id.weightDescriptionTextView)
         val heightOfPokemon : TextView = view.findViewById(R.id.heightDescriptionTextView)
         val typeOfPokemon : TextView = view.findViewById(R.id.typeDescriptionTextView)
+        val pokemonImage : ImageView = view.findViewById(R.id.pokemonImage)
 
         if (detailedPokemonData != null) {
             nameOfPokemon.text = detailedPokemonData.name
         }
         if (detailedPokemonData != null) {
-            weightOfPokemon.text = detailedPokemonData.weight.toString()
+            val weightOfPokemonInKg = detailedPokemonData.weight / 10
+            weightOfPokemon.text = weightOfPokemonInKg.toString()
         }
         if (detailedPokemonData != null) {
-            heightOfPokemon.text = detailedPokemonData.height.toString()
+            val heightOfPokemonInCm = detailedPokemonData.height * 10
+            heightOfPokemon.text = heightOfPokemonInCm.toString()
         }
         if (detailedPokemonData != null) {
-            typeOfPokemon.text = detailedPokemonData.types.toString()
-        }
+            val pokemonTypeNameList = mutableListOf<String>()
 
+            detailedPokemonData.types.forEach { type ->
+                pokemonTypeNameList.add(type.type.name)
+            }
+            val pokemonTypeNameString = pokemonTypeNameList.joinToString(", ")
+            typeOfPokemon.text=pokemonTypeNameString
+        }
+        if (detailedPokemonData != null){
+            Glide.with(this).load(detailedPokemonData.sprites.front_default).into(pokemonImage)
+        }
 
     }
 

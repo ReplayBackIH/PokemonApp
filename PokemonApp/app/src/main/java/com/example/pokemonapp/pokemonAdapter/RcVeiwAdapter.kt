@@ -35,6 +35,7 @@ class RcVeiwAdapter(val listener: OnPokemonSelectedListener) :
             }
         }
 
+
         fun insertData(pokemon: SinglePokemon, positionOfPokemonInList: Int) = with(binding) {
             tvNameOfPokemon.text = pokemon.name
             tvPokemonPosition.text = (positionOfPokemonInList + 1).toString()
