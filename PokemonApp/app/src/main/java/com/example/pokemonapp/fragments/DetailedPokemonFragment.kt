@@ -10,12 +10,17 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import com.bumptech.glide.Glide
 import com.example.pokemonapp.R
 import com.example.pokemonapp.activities.RecyclerViewActivity
 import com.example.pokemonapp.databinding.FragmentDetailedPokemonBinding
 import com.example.pokemonapp.retrofit.PokemonApi
 import com.example.pokemonapp.retrofit.PokemonDetails
+import com.example.pokemonapp.viewmodel.PokemonViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,11 +31,7 @@ import retrofit2.create
 
 class DetailedPokemonFragment : Fragment() {
 
-    private val retrofit: Retrofit? = Retrofit.Builder()
-        .baseUrl("https://pokeapi.co/api/v2/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    private val pokemonApi = retrofit?.create(PokemonApi::class.java)
+    private lateinit var viewModel : PokemonViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,15 +45,16 @@ class DetailedPokemonFragment : Fragment() {
 
         val pokemonId = arguments?.getInt("pokemonId")
 
-        CoroutineScope(Dispatchers.IO).launch {
-            var detailedPokemonData : PokemonDetails? = null
-            if (pokemonId != null) {
-                 detailedPokemonData = pokemonApi?.getPokemonDetails(pokemonId)
-            }
-            withContext(Dispatchers.Main){
-                insertDetailedData(view,detailedPokemonData)
-            }
+        viewModel = ViewModelProvider(requireActivity())[PokemonViewModel::class.java]
+
+        viewModel.detailedPokemonPublic.observe(requireActivity(), Observer {
+            insertDetailedData(view,it)
+        })
+
+        if (pokemonId != null){
+            viewModel.getDetailedPokemons(pokemonId)
         }
+
 
         val buttonGoBack: Button = view.findViewById(R.id.btnGoBack)
         buttonGoBack.setOnClickListener {
@@ -88,7 +90,7 @@ class DetailedPokemonFragment : Fragment() {
             typeOfPokemon.text=pokemonTypeNameString
         }
         if (detailedPokemonData != null){
-            Glide.with(this).load(detailedPokemonData.sprites.front_default).into(pokemonImage)
+                Glide.with(view.context).load(detailedPokemonData.sprites.front_default).into(pokemonImage)
         }
 
     }
