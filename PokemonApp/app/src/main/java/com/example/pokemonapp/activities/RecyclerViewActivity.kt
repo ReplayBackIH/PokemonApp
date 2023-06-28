@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokemonapp.R
 import com.example.pokemonapp.databinding.ActivityRecyclerViewBinding
@@ -13,6 +15,7 @@ import com.example.pokemonapp.retrofit.OnPokemonSelectedListener
 import com.example.pokemonapp.retrofit.PokemonApi
 import com.example.pokemonapp.retrofit.PokemonDetails
 import com.example.pokemonapp.retrofit.SinglePokemon
+import com.example.pokemonapp.viewmodel.PokemonViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +26,7 @@ class RecyclerViewActivity : AppCompatActivity(),OnPokemonSelectedListener {
 
     lateinit var binding: ActivityRecyclerViewBinding
     lateinit var adapter: RcVeiwAdapter
+    private lateinit var viewModel : PokemonViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,19 +38,13 @@ class RecyclerViewActivity : AppCompatActivity(),OnPokemonSelectedListener {
         binding.rcView.layoutManager = LinearLayoutManager(this)
         binding.rcView.adapter = adapter
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://pokeapi.co/api/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val pokemonApi = retrofit.create(PokemonApi::class.java)
+        viewModel = ViewModelProvider(this)[PokemonViewModel::class.java]
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val listOfPokemons = pokemonApi.getAllPokemons()
+        viewModel.pokemonsPublic.observe(this, Observer {
+            adapter.submitList(it)
+        })
 
-            runOnUiThread{
-                adapter.submitList(listOfPokemons.results)
-            }
-        }
+        viewModel.getPokemons()
     }
 
     override fun onPokemonSelected(pokemonId: Int) {
