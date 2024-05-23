@@ -9,6 +9,8 @@ If user presses on the item of result list then dialog is showing asking the use
 Unfortunately, I was not able to implement all the functionality listed in the task within the allotted time, however, the fundamental and most important functionality of the application has been completed.
 Steps for improvenments:
 - Make app trigger string "fruits" when it starts.
+- Add exception handling.
+- Add Tests.
 - Beautify UI.
 - Make TextField singlelined.
 - Trigger Api call by pressing enter on screen keyboard, not only by pressing in-app button.
